@@ -1,0 +1,19 @@
+@baseUrl = http://localhost:3000
+
+
+### Get users
+GET http://localhost:3000/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjYsImVtYWlsIjoiaWNhcm8uYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NTI5NzcwMzAsImV4cCI6MTc1MzA2MzQzMH0.Y4Gt5X9cKFmrxHxFU2pmhxGxhc2HLa_8v7jMObG2tng
+
+
+### Registro de usuário
+POST http://localhost:3000/users
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoic2FtdWVsdmVsb3NvQHRlc3RlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzUyOTc2ODE4LCJleHAiOjE3NTMwNjMyMTh9.sWJmp2SEpYhzMUPz0LvviGo7FZCAh7fa6TkNypY-n88
+
+{
+  "name": "Ícaro Admin",
+  "email": "icaro.admin@example.com",
+  "password": "123456",
+  "role": "admin"
+}
