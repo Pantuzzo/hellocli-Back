@@ -1,28 +1,34 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import OpenAI from 'openai';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ChatService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async generateAndSave({
-    userId,
-    prompt,
-  }: {
-    userId: number;
-    prompt: string;
-  }) {
-    // Simulação de chamada para uma IA (você pode usar OpenAI ou outro)
-    const response = `Resposta gerada para: ${prompt}`;
+  async generateAndSave({ userId, prompt }: { userId: number; prompt: string }) {
+  const openai = new OpenAI({
+    apiKey: process.env.IAToken,
+  });
 
-    return this.prisma.chat.create({
-      data: {
-        userId,
-        prompt,
-        response,
-      },
-    });
-  }
+  // Chamada para criar completions (ou chat completions)
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [{ role: "user", content: prompt }],
+  });
+
+  const textResponse = completion.choices[0].message.content ?? "";
+
+  // Salva no banco
+  return this.prisma.chat.create({
+    data: {
+      userId,
+      prompt,
+      response: textResponse,
+    },
+  });
+}
+
 
   async findAllByUser(userId: number) {
     return this.prisma.chat.findMany({

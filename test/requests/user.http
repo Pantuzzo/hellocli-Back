@@ -1,19 +1,44 @@
 @baseUrl = http://localhost:3000
 
 
-### Get users
+### Usuários - Listar todos os usuários (somente ADMIN)
 GET http://localhost:3000/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjYsImVtYWlsIjoiaWNhcm8uYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NTI5NzcwMzAsImV4cCI6MTc1MzA2MzQzMH0.Y4Gt5X9cKFmrxHxFU2pmhxGxhc2HLa_8v7jMObG2tng
+Authorization: Bearer <seu_token_jwt>
 
+###
 
-### Registro de usuário
+### Usuários - Buscar usuário pelo ID (ADMIN ou dono da conta)
+GET http://localhost:3000/users/:id
+Authorization: Bearer <seu_token_jwt>
+
+###
+
+### Usuários - Criar novo usuário (recomenda-se só ADMIN)
 POST http://localhost:3000/users
+Authorization: Bearer <seu_token_jwt>  # Remova essa linha se o endpoint for público
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoic2FtdWVsdmVsb3NvQHRlc3RlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzUyOTc2ODE4LCJleHAiOjE3NTMwNjMyMTh9.sWJmp2SEpYhzMUPz0LvviGo7FZCAh7fa6TkNypY-n88
 
 {
-  "name": "Ícaro Admin",
-  "email": "icaro.admin@example.com",
-  "password": "123456",
-  "role": "admin"
+  "email": "novo.usuario@exemplo.com",
+  "password": "senhaSegura123",
+  "role": "USER",
+  "name": "Nome do Usuário"
 }
+
+###
+
+### Usuários - Atualizar usuário pelo ID (ADMIN ou dono da conta)
+PATCH http://localhost:3000/users/:id
+Authorization: Bearer <seu_token_jwt>
+Content-Type: application/json
+
+{
+  "name": "Nome Atualizado",
+  "password": "novaSenha123"
+}
+
+###
+
+### Usuários - Deletar usuário pelo ID (somente ADMIN)
+DELETE http://localhost:3000/users/:id
+Authorization: Bearer <seu_token_jwt>

@@ -1,31 +1,8 @@
-### Login
+### Auth - Login (Público)
 POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-  "email": "samuelveloso@teste.com",
-  "password": "123456"
-}
-
-### POST Cria post
-POST http://localhost:3000/posts
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoic2FtdWVsdmVsb3NvQHRlc3RlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzUzMDUwNTY2LCJleHAiOjE3NTMxMzY5NjZ9.k9apajkvAm8kQweD3K4H5aQYe_UtdKGGM3k9n0yeEak
-Content-Type: application/json
-
-{
-  "prompt": "Escreva um texto sobre os benefícios da inteligência artificial para pequenas empresas."
-}
-
-#### GET exibe os posts
-GET http://localhost:3000/posts
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjYsImVtYWlsIjoiaWNhcm8uYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NTI5ODI0ODEsImV4cCI6MTc1MzA2ODg4MX0.6DQgTGq3QD7FfmsHmUaspXIwF83jA34GQU0k6QFT6G4
-
-
-###
-POST http://localhost:3000/chat
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoic2FtdWVsdmVsb3NvQHRlc3RlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzUzMDUxMjE4LCJleHAiOjE3NTMxMzc2MTh9.AyazwbMoeHyLGNZ662i2ayeK9ZjHgyT1lo0v7QBiV1k
-Content-Type: application/json
-
-{
-  "prompt": "eu sou bonitao?"
+  "email": "usuario@exemplo.com",
+  "password": "senha123"
 }

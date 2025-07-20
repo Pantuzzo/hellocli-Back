@@ -1,0 +1,26 @@
+### Chat - Enviar prompt (ADMIN ou USER, token obrigatório)
+POST http://localhost:3000/chat
+Authorization: Bearer <seu_token_jwt>
+Content-Type: application/json
+
+{
+  "prompt": "Escreva um poema sobre a lua."
+}
+
+###
+
+### Chat - Listar todas as conversas do usuário logado (ADMIN ou USER)
+GET http://localhost:3000/chat
+Authorization: Bearer <seu_token_jwt>
+
+###
+
+### Chat - Buscar conversa específica pelo ID (ADMIN ou USER)
+GET http://localhost:3000/chat/:id
+Authorization: Bearer <seu_token_jwt>
+
+###
+
+### Chat - Excluir conversa específica pelo ID (ADMIN ou USER)
+DELETE http://localhost:3000/chat/:id
+Authorization: Bearer <seu_token_jwt>

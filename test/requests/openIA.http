@@ -1,0 +1,8 @@
+
+### OpenAI - Enviar mensagem para IA (público ou protegido conforme configuração)
+POST http://localhost:3000/openai/chat
+Content-Type: application/json
+
+{
+  "message": "Olá, IA! Pode me ajudar com um resumo?"
+}
