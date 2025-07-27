@@ -10,7 +10,16 @@ export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
+
+  getProfile() {
+    // Aqui você normalmente pegaria o user do request,
+    // mas como exemplo, vamos retornar um mock
+    return {
+      message: 'Perfil do usuário autenticado',
+      // Pode retornar o user do contexto se estiver usando Passport
+    };
+  }
 
   async login(email: string, password: string) {
     const user = await this.prisma.user.findUnique({ where: { email } })
@@ -23,6 +32,7 @@ export class AuthService {
       sub: user.id,
       email: user.email,
       role: user.role,
+      companyId: user.companyId,
     };
 
 
@@ -30,6 +40,11 @@ export class AuthService {
 
     return {
       access_token: token,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
     }
   }
 }

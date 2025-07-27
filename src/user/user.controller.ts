@@ -1,5 +1,23 @@
 // src/user/user.controller.ts
-import { Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  ForbiddenException,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -8,22 +26,29 @@ import { CreateUserDto } from './dto/create-user.dto';
 import type { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
 
+@ApiTags('Usuários')
+@ApiBearerAuth('JWT-auth')
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
-  // Lista todos os usuários - apenas admin
   @Get()
   @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Listar todos os usuários (apenas ADMIN)' })
+  @ApiResponse({ status: 200, description: 'Lista de usuários retornada com sucesso' })
+  @ApiResponse({ status: 403, description: 'Acesso negado' })
   findAllUsers() {
     return this.userService.findAll();
   }
 
-  // Pega dados do próprio usuário ou admin
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  async findOne(@Param('id') id: string, @Req() req){
+  @ApiOperation({ summary: 'Buscar usuário por ID (ADMIN ou dono)' })
+  @ApiParam({ name: 'id', type: 'number', example: 1 })
+  @ApiResponse({ status: 200, description: 'Usuário encontrado com sucesso' })
+  @ApiResponse({ status: 403, description: 'Acesso negado' })
+  async findOne(@Param('id') id: string, @Req() req) {
     const userId = req.user.userId;
     const role = req.user.role;
     if (role !== Role.ADMIN && userId !== +id) {
@@ -32,15 +57,20 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
-  // Cria novo usuário (talvez só admin pode criar, adapte se quiser)
   @Post()
+  @ApiOperation({ summary: 'Criar novo usuário' })
+  @ApiResponse({ status: 201, description: 'Usuário criado com sucesso' })
+  @ApiResponse({ status: 400, description: 'Dados inválidos' })
   async create(@Body() dto: CreateUserDto) {
     return this.userService.createUser(dto);
   }
 
-   // Atualiza usuário (admin ou dono da conta)
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Atualizar usuário (ADMIN ou dono)' })
+  @ApiParam({ name: 'id', type: 'number', example: 1 })
+  @ApiResponse({ status: 200, description: 'Usuário atualizado com sucesso' })
+  @ApiResponse({ status: 403, description: 'Acesso negado' })
   async update(@Param('id') id: string, @Body() dto: UpdateUserDto, @Req() req) {
     const userId = req.user.userId;
     const role = req.user.role;
@@ -52,12 +82,14 @@ export class UserController {
     return this.userService.update(+id, dto);
   }
 
-  // Deleta usuário - só admin
   @Delete(':id')
   @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Deletar usuário (apenas ADMIN)' })
+  @ApiParam({ name: 'id', type: 'number', example: 1 })
+  @ApiResponse({ status: 200, description: 'Usuário deletado com sucesso' })
+  @ApiResponse({ status: 403, description: 'Acesso negado' })
   async delete(@Param('id') id: string) {
     return this.userService.delete(+id);
   }
 }
-

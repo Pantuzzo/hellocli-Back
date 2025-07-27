@@ -1,13 +1,15 @@
 # AI Chat Backend Server
 
-Backend em NestJS para um sistema de chatbot com integração OpenAI, persistência no banco PostgreSQL (Neon) e autenticação JWT com controle de roles.
+> Backend escalável para plataformas de atendimento automatizado.
+
+Chatbot inteligente com controle multiempresa, autenticação JWT com roles, integração OpenAI e armazenamento persistente.
 
 ## 🚀 Funcionalidades
 
 - **Autenticação JWT** com roles (`ADMIN`, `USER`)
 - **Guards de autorização** para proteger rotas baseado em roles
 - **Integração OpenAI** para geração de respostas inteligentes
-- **CRUD completo de conversas** associadas a usuários
+- **CRUD completo de conversas** associadas a usuários e empresas (multi-tenant)
 - **Persistência** dos chats no banco PostgreSQL via Prisma ORM
 - **Validação de dados** com class-validator
 - **Arquitetura modular**: Auth, User, Chat, OpenAI
@@ -221,6 +223,14 @@ Content-Type: application/json
 *Usuários só podem acessar seus próprios dados
 
 ## 🗄️ Estrutura do Banco
+
+### Tabela `Company`
+
+```sql
+- id: Int (PK, auto-increment)
+- name: String
+- createdAt: DateTime
+```
 
 ### Tabela `User`
 ```sql

@@ -1,0 +1,47 @@
+### Teste da API - AI Chat Backend
+
+### 1. Criar usuário admin
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+  "name": "Admin User",
+  "email": "admin@example.com",
+  "password": "123456",
+  "role": "admin"
+}
+
+### 2. Fazer login
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "123456"
+}
+
+### 3. Testar endpoint protegido (substitua <token> pelo token retornado)
+GET http://localhost:3000/users
+Authorization: Bearer <token>
+
+### 4. Testar chat
+POST http://localhost:3000/chat
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "prompt": "Explique o que é TypeScript"
+}
+
+### 5. Listar chats
+GET http://localhost:3000/chat
+Authorization: Bearer <token>
+
+### 6. Testar OpenAI direto (ADMIN)
+POST http://localhost:3000/openai/chat
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "message": "Explique o que é NestJS"
+} 

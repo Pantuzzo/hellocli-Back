@@ -4,6 +4,8 @@ export interface RequestWithUser extends Request {
   user: {
     userId: number;
     id: number;
-    email?: string;
+    email: string;
+    role: string;
+    companyId: number;
   };
 }

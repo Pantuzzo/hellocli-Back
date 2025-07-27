@@ -7,23 +7,63 @@ datasource db {
   url      = env("psql")
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  role      String   @default("user")
-  Chat      Chat[]
+model Company {
+  id            Int            @id @default(autoincrement())
+  name          String
+  createdAt     DateTime       @default(now())
+  users         User[]
+  conversations Conversation[]
+  ChatSettings  ChatSettings?
 }
 
-model Chat {
-  id        String   @id @default(uuid())
-  userId    Int
-  prompt    String
-  response  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model User {
+  id            Int            @id @default(autoincrement())
+  name          String
+  email         String         @unique
+  password      String
+  role          String         @default("user")
+  companyId     Int
+  company       Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt     DateTime       @default(now())
+  conversations Conversation[]
+}
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+model ChatSettings {
+  id           Int      @id @default(autoincrement())
+  companyId    Int      @unique
+  welcomeMsg   String   @default("Olá! Como posso te ajudar?")
+  fallbackMsg  String   @default("Desculpe, não entendi. Pode reformular?")
+  useHuman     Boolean  @default(false)
+  handoffAfter Int? // Quantas tentativas antes de transferir para humano
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id])
+}
+
+model Conversation {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  companyId Int
+  title     String?
+  createdAt DateTime @default(now())
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company  Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  messages Message[]
+}
+
+model Message {
+  id             Int        @id @default(autoincrement())
+  content        String
+  sender         SenderType
+  conversationId Int
+  createdAt      DateTime   @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+}
+
+enum SenderType {
+  USER
+  BOT
 }
