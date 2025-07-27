@@ -1,113 +1,337 @@
-# AI Chat Backend (NestJS + OpenAI + Neon)
+# AI Chat Backend Server
 
-Backend em NestJS para um chatbot com integração OpenAI, persistência no banco Neon (PostgreSQL) e autenticação JWT com roles.
+Backend em NestJS para um sistema de chatbot com integração OpenAI, persistência no banco PostgreSQL (Neon) e autenticação JWT com controle de roles.
 
----
+## 🚀 Funcionalidades
 
-## Funcionalidades
+- **Autenticação JWT** com roles (`ADMIN`, `USER`)
+- **Guards de autorização** para proteger rotas baseado em roles
+- **Integração OpenAI** para geração de respostas inteligentes
+- **CRUD completo de conversas** associadas a usuários
+- **Persistência** dos chats no banco PostgreSQL via Prisma ORM
+- **Validação de dados** com class-validator
+- **Arquitetura modular**: Auth, User, Chat, OpenAI
+- **Testes** com Jest e Supertest
 
-- **Autenticação JWT** com roles (`ADMIN`, `USER`).
-- **Guards** para proteger rotas baseado em roles.
-- **Integração OpenAI** para geração de respostas a partir de prompts.
-- **CRUD de conversas** associadas a usuários.
-- **Persistência** dos chats no banco Neon (PostgreSQL) via Prisma ORM.
-- **Validação de token e usuário** nos endpoints protegidos.
-- **Modularização**: Auth, User, Chat, OpenAI.
+## 🛠️ Tecnologias
 
----
+- **[NestJS](https://nestjs.com/)** - Framework Node.js
+- **[Prisma ORM](https://www.prisma.io/)** - ORM para PostgreSQL
+- **[PostgreSQL (Neon)](https://neon.tech/)** - Banco de dados
+- **[OpenAI API](https://platform.openai.com/)** - Integração com IA
+- **[JWT](https://jwt.io/)** - Autenticação
+- **[Passport.js](http://www.passportjs.org/)** - Estratégias de autenticação
+- **[TypeScript](https://www.typescriptlang.org/)** - Linguagem principal
+- **[bcrypt](https://github.com/dcodeIO/bcrypt.js/)** - Hash de senhas
 
-## Tecnologias
-
-- [NestJS](https://nestjs.com/)
-- [Prisma ORM](https://www.prisma.io/)
-- [PostgreSQL (Neon)](https://neon.tech/)
-- [OpenAI API](https://platform.openai.com/)
-- [JWT Authentication](https://jwt.io/)
-- [Passport.js](http://www.passportjs.org/)
-- TypeScript
-
----
-
-## Pré-requisitos
+## 📋 Pré-requisitos
 
 - Node.js >= 18
-- Yarn ou npm
-- Conta Neon e configuração da URL do banco no `.env`
-- Conta OpenAI e chave API no `.env`
+- npm ou yarn
+- Conta Neon (PostgreSQL)
+- Conta OpenAI com API Key
 
----
-
-## Setup
+## ⚙️ Configuração
 
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/seu-repo.git
-cd seu-repo
+git clone <seu-repositorio>
+cd AIContent_Server
+```
 
-2. Instale as dependências
+### 2. Instale as dependências
 
+```bash
 npm install
-# ou
-yarn install
+```
 
-3. Configure as variáveis de ambiente
-DATABASE_URL=postgresql://usuario:senha@host:porta/banco?schema=public
-JWT_SECRET=sua_chave_secreta
+### 3. Configure as variáveis de ambiente
+
+Crie um arquivo `.env` na raiz do projeto:
+
+```env
+# Database
+psql=postgresql://usuario:senha@host:porta/banco?schema=public
+
+# JWT
+JWT_SECRET=sua_chave_secreta_muito_segura
 JWT_EXPIRES_IN=1h
-OPENAI_API_KEY=sua_chave_openai
 
-4. Rodar as migrations Prisma
-npx prisma migrate dev --name init
+# OpenAI
+OPENAI_API_KEY=sua_chave_api_openai
+```
 
-# API - Documentação de Endpoints
+### 4. Execute as migrations do Prisma
 
-Esta documentação lista os principais endpoints disponíveis na API, suas rotas, métodos HTTP, níveis de autorização e descrição.
+```bash
+npx prisma migrate dev
+```
+
+### 5. Inicie o servidor
+
+```bash
+# Desenvolvimento
+npm run start:dev
+
+# Produção
+npm run build
+npm run start:prod
+```
+
+O servidor estará disponível em `http://localhost:3000`
+
+## 📚 Documentação da API
+
+### 🔐 Autenticação
+
+#### Login
+```http
+POST /auth/login
+Content-Type: application/json
+
+{
+  "email": "usuario@exemplo.com",
+  "password": "senha123"
+}
+```
+
+**Resposta:**
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": 1,
+    "email": "usuario@exemplo.com",
+    "role": "user"
+  }
+}
+```
+
+### 💬 Chat
+
+#### Enviar mensagem para IA
+```http
+POST /chat
+Authorization: Bearer <seu_token_jwt>
+Content-Type: application/json
+
+{
+  "prompt": "Explique o que é TypeScript"
+}
+```
+
+#### Listar conversas do usuário
+```http
+GET /chat
+Authorization: Bearer <seu_token_jwt>
+```
+
+#### Buscar conversa específica
+```http
+GET /chat/:id
+Authorization: Bearer <seu_token_jwt>
+```
+
+#### Excluir conversa
+```http
+DELETE /chat/:id
+Authorization: Bearer <seu_token_jwt>
+```
+
+### 👥 Usuários
+
+#### Listar todos os usuários (ADMIN)
+```http
+GET /users
+Authorization: Bearer <seu_token_jwt>
+```
+
+#### Buscar usuário específico
+```http
+GET /users/:id
+Authorization: Bearer <seu_token_jwt>
+```
+
+#### Criar novo usuário
+```http
+POST /users
+Content-Type: application/json
+
+{
+  "name": "João Silva",
+  "email": "joao@exemplo.com",
+  "password": "senha123"
+}
+```
+
+#### Atualizar usuário
+```http
+PATCH /users/:id
+Authorization: Bearer <seu_token_jwt>
+Content-Type: application/json
+
+{
+  "name": "João Silva Atualizado",
+  "email": "joao.novo@exemplo.com"
+}
+```
+
+#### Excluir usuário (ADMIN)
+```http
+DELETE /users/:id
+Authorization: Bearer <seu_token_jwt>
+```
+
+### 🤖 OpenAI (Acesso direto)
+
+#### Chat direto com IA (ADMIN)
+```http
+POST /openai/chat
+Authorization: Bearer <seu_token_jwt>
+Content-Type: application/json
+
+{
+  "message": "Explique o que é NestJS"
+}
+```
+
+## 🔒 Controle de Acesso
+
+### Roles Disponíveis
+- **USER**: Acesso básico aos chats e perfil próprio
+- **ADMIN**: Acesso completo a todos os recursos
+
+### Endpoints por Nível de Acesso
+
+| Endpoint | Método | USER | ADMIN | Público |
+|----------|--------|------|-------|---------|
+| `/auth/login` | POST | ✅ | ✅ | ✅ |
+| `/chat` | POST | ✅ | ✅ | ❌ |
+| `/chat` | GET | ✅ | ✅ | ❌ |
+| `/chat/:id` | GET | ✅ | ✅ | ❌ |
+| `/chat/:id` | DELETE | ✅ | ✅ | ❌ |
+| `/users` | GET | ❌ | ✅ | ❌ |
+| `/users/:id` | GET | ✅* | ✅ | ❌ |
+| `/users` | POST | ✅ | ✅ | ✅ |
+| `/users/:id` | PATCH | ✅* | ✅ | ❌ |
+| `/users/:id` | DELETE | ❌ | ✅ | ❌ |
+| `/openai/chat` | POST | ❌ | ✅ | ❌ |
+
+*Usuários só podem acessar seus próprios dados
+
+## 🗄️ Estrutura do Banco
+
+### Tabela `User`
+```sql
+- id: Int (PK, auto-increment)
+- name: String
+- email: String (unique)
+- password: String (hashed)
+- role: String (default: "user")
+- createdAt: DateTime
+```
+
+### Tabela `Chat`
+```sql
+- id: String (PK, UUID)
+- userId: Int (FK para User)
+- prompt: String
+- response: String
+- createdAt: DateTime
+- updatedAt: DateTime
+```
+
+## 🧪 Testes
+
+### Executar testes unitários
+```bash
+npm run test
+```
+
+### Executar testes e2e
+```bash
+npm run test:e2e
+```
+
+### Executar testes com coverage
+```bash
+npm run test:cov
+```
+
+## 📁 Estrutura do Projeto
+
+```
+src/
+├── auth/                 # Autenticação e autorização
+│   ├── decorators/      # Decorators personalizados
+│   ├── guards/          # Guards de proteção
+│   ├── dto/            # Data Transfer Objects
+│   └── ...
+├── chat/                # Módulo de conversas
+│   ├── dto/            # DTOs do chat
+│   └── ...
+├── user/                # Módulo de usuários
+│   ├── dto/            # DTOs do usuário
+│   └── ...
+├── openai/              # Integração OpenAI
+└── prisma/              # Configuração do Prisma
+```
+
+## 🚀 Scripts Disponíveis
+
+```bash
+# Desenvolvimento
+npm run start:dev        # Servidor com hot reload
+npm run start:debug      # Servidor em modo debug
+
+# Produção
+npm run build           # Compilar TypeScript
+npm run start:prod      # Executar versão compilada
+
+# Testes
+npm run test            # Testes unitários
+npm run test:e2e        # Testes end-to-end
+npm run test:cov        # Testes com coverage
+
+# Qualidade de código
+npm run lint            # ESLint
+npm run format          # Prettier
+```
+
+## 🔧 Comandos Prisma
+
+```bash
+# Gerar cliente Prisma
+npx prisma generate
+
+# Executar migrations
+npx prisma migrate dev
+
+# Visualizar banco (Prisma Studio)
+npx prisma studio
+
+# Reset do banco
+npx prisma migrate reset
+```
+
+## 🤝 Contribuição
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+
+## 📞 Suporte
+
+Para dúvidas ou suporte, abra uma issue no repositório ou entre em contato através do email.
 
 ---
 
-## 🔐 Auth
-
-| Método | Rota           | Descrição                          | Autorização          |
-|--------|----------------|----------------------------------|---------------------|
-| POST   | `/auth/login`  | Realiza login e retorna token JWT | Público (sem token)  |
-
----
-
-## 💬 Chat
-
-| Método | Rota          | Descrição                                     | Autorização            |
-|--------|---------------|-----------------------------------------------|-----------------------|
-| POST   | `/chat`       | Envia prompt para IA e salva a resposta       | ADMIN, USER (JWT)      |
-| GET    | `/chat`       | Lista todas as conversas do usuário logado    | ADMIN, USER (JWT)      |
-| GET    | `/chat/:id`   | Busca uma conversa específica do usuário      | ADMIN, USER (JWT)      |
-| DELETE | `/chat/:id`   | Exclui uma conversa específica do usuário     | ADMIN, USER (JWT)      |
-
----
-
-## 👥 Usuários
-
-| Método | Rota          | Descrição                                                        | Autorização                 |
-|--------|---------------|------------------------------------------------------------------|----------------------------|
-| GET    | `/users`      | Lista todos os usuários                                          | ADMIN (JWT)                |
-| GET    | `/users/:id`  | Busca dados de um usuário pelo ID. Admin acessa qualquer; usuário só os seus | ADMIN ou dono da conta (JWT) |
-| POST   | `/users`      | Cria novo usuário (recomenda-se só ADMIN)                       | Público ou ADMIN*           |
-| PATCH  | `/users/:id`  | Atualiza dados do usuário (Admin ou dono da conta)              | ADMIN ou dono da conta (JWT) |
-| DELETE | `/users/:id`  | Remove usuário do sistema                                        | ADMIN (JWT)                |
-
-*Nota: No momento a criação de usuário está pública, mas recomenda-se restringir.*
-
----
-
-## 🤖 OpenAI (Integração com IA)
-
-| Método | Rota           | Descrição                              | Autorização          |
-|--------|----------------|--------------------------------------|---------------------|
-| POST   | `/openai/chat` | Envia mensagem para a IA e recebe resposta | Público (sem token)* |
-
----
-
-## ⚠️ Autenticação e Autorização
-
-- Para acessar endpoints protegidos, envie o token JWT no header:
+**Desenvolvido com ❤️ usando NestJS e TypeScript**
 
