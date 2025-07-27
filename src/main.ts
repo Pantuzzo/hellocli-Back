@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { exec } from 'child_process';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -44,5 +45,7 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
 
   await app.listen(3000);
+  
+  exec('start http://localhost:3000/docs/');
 }
 bootstrap();
