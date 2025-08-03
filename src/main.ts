@@ -3,17 +3,18 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { exec } from 'child_process';
 import { AppModule } from './app.module';
+
 const urls = [
   'http://localhost:5173',
   'http://localhost:3030',
-  'https://https://hellocli.netlify.app'
-]
+  'https://hellocli.netlify.app',
+];
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: [{urls}],
+    origin: urls,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     credentials: true,
@@ -21,9 +22,9 @@ async function bootstrap() {
 
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,            // Remove propriedades não existentes no DTO
-      forbidNonWhitelisted: true, // Retorna erro se enviar algo fora do DTO
-      transform: true,            // Transforma os dados no tipo correto do DTO
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
 
@@ -47,8 +48,11 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
-  await await app.listen(process.env.PORT || 3000);
-  
-  exec('start http://localhost:3000/docs/');
+  const port = process.env.PORT || 3000;
+  await app.listen(port, '0.0.0.0');
+
+  if (process.env.NODE_ENV !== 'production') {
+    exec('start http://localhost:3000/docs/');
+  }
 }
 bootstrap();
