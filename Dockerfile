@@ -1,15 +1,14 @@
-# Etapa 1 - build da aplicação
 FROM node:20-alpine as builder
 
 WORKDIR /app
 
 COPY package*.json ./
+RUN npx prisma generate
 RUN npm install
 
 COPY . .
 RUN npm run build
 
-# Etapa 2 - imagem final
 FROM node:20-alpine
 
 WORKDIR /app
