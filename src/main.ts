@@ -3,19 +3,22 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { exec } from 'child_process';
 import { AppModule } from './app.module';
+const urls = [
+  'http://localhost:5173',
+  'http://localhost:3030',
+  'https://https://hellocli.netlify.app'
+]
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Configuração CORS
   app.enableCors({
-    origin: ['http://localhost:5173', 'https://https://hellocli.netlify.app'],
+    origin: [{urls}],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     credentials: true,
   });
 
-  // Ativa a validação global com class-validator
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,            // Remove propriedades não existentes no DTO
