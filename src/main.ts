@@ -9,7 +9,7 @@ async function bootstrap() {
 
   // Configuração CORS
   app.enableCors({
-    origin: true, // Permite todas as origens em desenvolvimento
+    origin: ['http://localhost:5173', 'https://https://hellocli.netlify.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     credentials: true,
@@ -44,7 +44,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
-  await app.listen(3000);
+  await await app.listen(process.env.PORT || 3000);
   
   exec('start http://localhost:3000/docs/');
 }
