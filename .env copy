@@ -1,4 +1,4 @@
-psql='postgresql://URL_OF_BD'
+DATABASE_URL='postgresql://URL_OF_BD'
 secretOrKey=''
 JWT_SECRET=''
 JWT_EXPIRES_IN=''

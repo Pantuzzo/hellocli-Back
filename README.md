@@ -54,7 +54,7 @@ Crie um arquivo `.env` na raiz do projeto:
 
 ```env
 # Database
-psql=postgresql://usuario:senha@host:porta/banco?schema=public
+DATABASE_URL=postgresql://usuario:senha@host:porta/banco?schema=public
 
 # JWT
 JWT_SECRET=sua_chave_secreta_muito_segura
