@@ -10,10 +10,9 @@ const allowedOrigins = [
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
-  // Ativa o CORS para múltiplas origens
-  app.enableCors({
-    origin: allowedOrigins,
+  
+    app.enableCors({
+    origin: ['http://localhost:3000', 'https://https://hellocli.netlify.app'],
     credentials: true,
   });
 
