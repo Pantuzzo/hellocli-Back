@@ -16,12 +16,23 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // Configura Swagger (ativo em todos os ambientes)
   const config = new DocumentBuilder()
-    .setTitle('HelloCli API')
-    .setDescription('Documentação da API do HelloCli')
-    .setVersion('1.0')
-    .build();
+  .setTitle('HelloCli API')
+  .setDescription('Documentação da API do HelloCli')
+  .setVersion('1.0')
+  .addBearerAuth(
+    {
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      name: 'Authorization',
+      description: 'Insira o token JWT aqui',
+      in: 'header',
+    },
+    'JWT-auth',
+  )
+  .build();
+    
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
