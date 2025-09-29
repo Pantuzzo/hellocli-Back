@@ -10,7 +10,7 @@ const allowedOrigins = [
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
     app.enableCors({
     origin: ['http://localhost:3000', 'https://hellocli.netlify.app'],
     credentials: true,
@@ -32,7 +32,7 @@ async function bootstrap() {
     'JWT-auth',
   )
   .build();
-    
+
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);

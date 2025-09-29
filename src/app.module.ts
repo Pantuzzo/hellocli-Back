@@ -8,6 +8,7 @@ import { MessageModule } from './message/message.module';
 import { OpenAIModule } from './openai/openai.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
+import { WebSocketModule } from './websocket/websocket.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { UserModule } from './user/user.module';
     CompanyModule,
     ConversationModule,
     MessageModule,
-    OpenAIModule
+    OpenAIModule,
+    WebSocketModule,
   ],
 })
 export class AppModule { }
